@@ -13,6 +13,12 @@ class BaseSettings(_BaseSettings):
     )
 
 
+class SecuritySettings(BaseSettings):
+    JWT_SECRET_KEY: str
+    JWT_ALGORITHM: str
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int
+
+
 class DatabaseSettings(BaseSettings):
     POSTGRES_HOST: str
     POSTGRES_PASSWORD: SecretStr
@@ -44,7 +50,7 @@ class RedisSettings(BaseSettings):
     def url(self) -> str:
         return f"redis://:{self.REDIS_PASSWORD.get_secret_value()}@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
 
-
-base_settings = BaseSettings()
+settings = BaseSettings()
+security_settings = SecuritySettings()
 database_settings = DatabaseSettings()
 redis_settings = RedisSettings()
