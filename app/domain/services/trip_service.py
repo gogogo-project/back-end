@@ -1,4 +1,4 @@
-from app.domain.models.trip import Trip
+from app.domain.models import Trip
 from app.domain.repositories.trip_repository import TripRepository
 
 class TripService:

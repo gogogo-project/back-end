@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from app.domain.models.trip import Trip
+from app.domain.models import Trip
 
 
 class TripRepository(ABC):

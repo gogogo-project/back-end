@@ -21,24 +21,23 @@ class SecuritySettings(BaseSettings):
 
 class DatabaseSettings(BaseSettings):
     POSTGRES_HOST: str
-    POSTGRES_PASSWORD: SecretStr
+    POSTGRES_PASSWORD: str
     POSTGRES_DB: str
     POSTGRES_PORT: int
     POSTGRES_USER: str
 
     @property
-    def url(self) -> str:
-        return str(
-            URL.create(
-                drivername="postgresql+asyncpg",
-                username=self.POSTGRES_USER,
-                password=self.POSTGRES_PASSWORD.get_secret_value(),
-                host=self.POSTGRES_HOST,
-                port=self.POSTGRES_PORT,
-                database=self.POSTGRES_DB,
-            )
+    def url(self) -> URL:
+        url: URL = URL.create(
+            drivername="postgresql+asyncpg",
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            host=self.POSTGRES_HOST,
+            port=self.POSTGRES_PORT,
+            database=self.POSTGRES_DB,
         )
-
+        print(f'{url=}')
+        return url
 
 class RedisSettings(BaseSettings):
     REDIS_HOST: str

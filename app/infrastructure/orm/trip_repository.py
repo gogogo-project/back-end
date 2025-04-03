@@ -2,7 +2,7 @@ from typing import Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.domain.models.trip import Trip
+from app.domain.models import Trip
 from app.domain.repositories.trip_repository import TripRepository
 
 
