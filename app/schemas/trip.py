@@ -15,4 +15,4 @@ class TripCreate(BaseModel):
     number_of_seats: int = Field(..., gt=0)
 
     class Config:
-        orm_mode = True
+        from_attributes = True
