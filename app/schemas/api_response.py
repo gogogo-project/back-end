@@ -1,13 +1,13 @@
-from pydantic import BaseModel
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from app.api.routers.tools.enums import APIStatusEnum
+from app.schemas.user import TelegramUserResponse, BaseModel
 
 
 class APIResponse(BaseModel):
-    status: int | APIStatusEnum
-    message: str | dict[str, Any]
-    detail: Optional[Any] = None
+    status: Union[int, APIStatusEnum]
+    message: Union[str, dict[str, Any]]
+    detail: Optional[TelegramUserResponse]
 
     class Config:
         from_attributes = True

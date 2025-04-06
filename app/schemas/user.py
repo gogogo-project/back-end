@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 from typing import Optional, Final, TypeVar
 
 
@@ -17,7 +17,7 @@ class TelegramUserCreate(UserCreate):
     telegram_id: int = Field(..., example=1)
     username: str = Field(..., example="@username")
     phone_number: Optional[str] = Field(..., example="+996700700700")
-    auth_method: Final[str] = 'telegram'
+    auth_method: Optional[str] = Field(default='telegram')
 
     class Config:
         from_attributes = True
@@ -31,10 +31,6 @@ class TelegramUserResponse(BaseUserResponse):
 
     class Config:
         from_attributes = True
-
-    @field_validator('telegram_id')
-    def validate_phone_number(cls, value):
-        return int(value)
 
 
 class GeneralUserResponse(BaseUserResponse):

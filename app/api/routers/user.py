@@ -18,16 +18,26 @@ router = APIRouter()
 async def login_with_telegram(user_data: TelegramUserCreate, db: AsyncSession = Depends(get_db)):
     user_repository = SQLUserRepository(db)
     user: User = await user_repository.get_user_by_telegram_id(telegram_id=user_data.telegram_id)
-    message = f'User with telegram_id {user_data.username} authenticated successfully'
     if user is None:
         service = UserService(SQLUserRepository(db))
         user: TelegramUserResponse = await service.create_user(user_data=user_data)
-        message = f'User with telegram_id {user.telegram_id} created successfully and authenticated'
+        return APIResponse(
+            status=APIStatusEnum.CREATED,
+            message=f'User with telegram_id {user_data.username} authenticated successfully',
+            detail=user,
+        )
+    detail = TelegramUserResponse.model_validate(user)
     return APIResponse(
-        status=APIStatusEnum.CREATED,
-        message=message,
-        detail=TelegramUserResponse.model_validate(user)
-    )
+        status=APIStatusEnum.SUCCESS,
+        message=f'User with telegram_id {user_data.username} authenticated successfully',
+        detail=TelegramUserResponse(
+            id=user.id,
+            telegram_id=user.telegram_id,
+            username=user.username,
+            phone_number=user.phone_number,
+
+        ),
+    ).model_dump()
 
 
 
