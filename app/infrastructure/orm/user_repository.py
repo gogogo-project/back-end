@@ -5,6 +5,7 @@ from sqlalchemy.future import select
 
 from app.domain.models import User
 from app.domain.repositories.user_repository import UserRepository
+from app.schemas.user import UserCreateTypeVar
 from app.infrastructure.orm.queries import (
     filter_user_by_telegram_id,
     filter_user_by_email,
@@ -32,16 +33,19 @@ class SQLUserRepository(UserRepository):
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create_user(self, user_data: dict) -> User:
-        user = User(**user_data)
+    async def create_user(self, user_data: UserCreateTypeVar) -> User:
+        user = User(**user_data.model_dump())
         self.db.add(user)
         await self.db.commit()
         await self.db.refresh(user)
         return user
 
-    async def get_user_by_telegram_id(self, telegram_id: str) -> User | None:
+    async def get_user_by_telegram_id(self, telegram_id: int) -> User | None:
         async with self.db as session:
-            user: Optional[User] = await get_user_by_telegram_id(session=session, telegram_id=telegram_id)
+            user: Optional[User] = await get_user_by_telegram_id(
+                session=session,
+                telegram_id=telegram_id,
+            )
             return user
 
     async def get_user_by_user_id(self, user_id: str) -> User | None:
@@ -53,7 +57,7 @@ class SQLUserRepository(UserRepository):
     async def is_user_exists(self, *, id: Union[str, int]) -> bool: ...
 
     @overload
-    async def is_user_exists(self, *, telegram_id: Union[str, int]) -> bool: ...
+    async def is_user_exists(self, *, telegram_id: int) -> bool: ...
 
     @overload
     async def is_user_exists(self, *, email: str) -> bool: ...
@@ -68,7 +72,12 @@ class SQLUserRepository(UserRepository):
             raise ValueError('only params id or telegram_id or email are required')
 
         async with self.db as session:
-            user: Optional[User] = (await self.filter_map[identifier_type](session, identifier_value)).one_or_none()
+            user: Optional[User] = (
+                await self.filter_map[identifier_type](
+                    session,
+                    identifier_value,
+                )
+            ).scalar_one_or_none()
 
         return True if user else False
 
@@ -79,4 +88,4 @@ class SQLUserRepository(UserRepository):
         async with self.db as session:
             user = await self.auth_field_map[auth_method](session, identifier)
 
-        return user.scalars().first()
+        return user

@@ -3,7 +3,12 @@ from typing import Type
 from app.core.security import get_password_hash
 from app.domain.repositories.user_repository import UserRepository
 from app.error.user_errors import ValidationException, UserAlreadyExistsException
-from app.schemas.user import UserCreate, UserResponse
+from app.schemas.user import (
+    UserCreateTypeVar,
+    UserResponseTypeVar,
+    TelegramUserResponse,
+    GeneralUserResponse,
+)
 from app.domain.services.bases import BaseUserCreationStrategy
 
 
@@ -11,18 +16,18 @@ class TelegramUserCreationStrategy(BaseUserCreationStrategy):
     """
     Handles Telegram-based user creation.
     """
-    async def create(self, user_data: UserCreate, repository: UserRepository):
+    async def create(self, user_data: UserCreateTypeVar, repository: UserRepository):
         if not user_data.telegram_id:
             raise ValidationException("Telegram ID is required for Telegram authentication.")
 
-        return await repository.create_user(user_data.model_dump())
+        return await repository.create_user(user_data)
 
 
 class EmailUserCreationStrategy(BaseUserCreationStrategy):
     """
     Handles Email-based user creation.
     """
-    async def create(self, user_data: UserCreate, repository: UserRepository):
+    async def create(self, user_data: UserCreateTypeVar, repository: UserRepository):
         if not user_data.email or not user_data.password:
             raise ValidationException("Email and password are required for email authentication.")
 
@@ -34,7 +39,7 @@ class PhoneUserCreationStrategy(BaseUserCreationStrategy):
     """
     Handles Phone-based user creation.
     """
-    async def create(self, user_data: UserCreate, repository: UserRepository):
+    async def create(self, user_data: UserCreateTypeVar, repository: UserRepository):
         if not user_data.phone_number:
             raise ValidationException("Phone number is required for phone authentication.")
 
@@ -50,12 +55,15 @@ class UserService:
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
-    async def create_user(self, user_data: UserCreate) -> UserResponse:
+    async def create_user(self, user_data: UserCreateTypeVar) -> UserResponseTypeVar:
         """
                Main user creation method. Selects the appropriate strategy based on `auth_method`.
                """
         auth_method = user_data.auth_method
-        identifier = user_data.telegram_id or user_data.email or user_data.phone_number
+        if auth_method == 'telegram':
+            identifier = user_data.telegram_id
+        else:
+            identifier = user_data.email or user_data.phone_number
         if auth_method not in self.strategies:
             raise ValidationException(f"Unsupported authentication method: {user_data.auth_method}")
 
@@ -72,5 +80,5 @@ class UserService:
         strategy = self.strategies[user_data.auth_method]
         user = await strategy.create(user_data=user_data, repository=self.user_repository)
         if auth_method == "telegram":
-            return UserResponse(id=user.id, telegram_id=user.telegram_id, username=user.username)
-        return UserResponse(id=user.id, username=user.username, email=user.email)
+            return TelegramUserResponse(id=user.id, telegram_id=user.telegram_id, username=user.username)
+        return GeneralUserResponse(id=user.id, username=user.username, email=user.email)

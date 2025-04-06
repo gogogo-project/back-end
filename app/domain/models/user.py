@@ -10,7 +10,7 @@ class User(Base, TimestampMixin):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    telegram_id: Mapped[Optional[str]] = mapped_column(String(255), unique=True, nullable=True)  # For Telegram users
+    telegram_id: Mapped[Optional[int]] = mapped_column(String(255), unique=True, nullable=True)  # For Telegram users
     username: Mapped[Optional[str]] = mapped_column(String(255), unique=True, nullable=True)  # Can be Telegram or app username
     email: Mapped[Optional[str]] = mapped_column(String(255), unique=True, nullable=True)  # For mobile app users
     phone_number: Mapped[Optional[str]] = mapped_column(String(255), unique=True, nullable=True)  # Used for OTP login

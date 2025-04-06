@@ -1,28 +1,42 @@
-from pydantic import BaseModel, Field, EmailStr
-from typing import Optional
-from datetime import datetime
+from pydantic import BaseModel, Field, field_validator
+from typing import Optional, Final, TypeVar
 
+
+UserCreateTypeVar = TypeVar('UserCreateTypeVar', bound='UserCreate')
+UserResponseTypeVar = TypeVar('UserResponseTypeVar', bound='UserResponse')
 
 class UserCreate(BaseModel):
-    telegram_id: Optional[str] = Field(None, example="@username")
-    username: Optional[str] = Field(None, example="john_doe")
-    email: Optional[EmailStr] = Field(None, example="user@example.com")
-    phone_number: Optional[str] = Field(None, example="+123456789")
-    password: Optional[str] = Field(None, example="securepassword123")
-    auth_method: str = Field(..., example="telegram")  # Required to specify the method
+    pass
+
+
+class BaseUserResponse(BaseModel):
+    pass
+
+
+class TelegramUserCreate(UserCreate):
+    telegram_id: int = Field(..., example=1)
+    username: str = Field(..., example="@username")
+    phone_number: Optional[str] = Field(..., example="+996700700700")
+    auth_method: Final[str] = 'telegram'
 
     class Config:
         from_attributes = True
 
 
-class UserResponse(BaseModel):
+class TelegramUserResponse(BaseUserResponse):
     id: int
-    username: Optional[str]
-    telegram_id: Optional[str] = None
-    email: Optional[EmailStr] = None
-    phone_number: Optional[str] = None
-    is_blocked: Optional[bool] = None
-    blocked_at: Optional[datetime] = None
+    telegram_id: int
+    username: str
+    phone_number: str
 
+    class Config:
+        from_attributes = True
+
+    @field_validator('telegram_id')
+    def validate_phone_number(cls, value):
+        return int(value)
+
+
+class GeneralUserResponse(BaseUserResponse):
     class Config:
         from_attributes = True
