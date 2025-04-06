@@ -47,6 +47,7 @@ async def create_user_with_telegram(user: UserCreate, db: AsyncSession = Depends
             detail={}
         )
     service = UserService(SQLUserRepository(db))
+    print(123123)
     new_user = await service.create_user(user)
     return APIResponse(
         status=APIStatusEnum.CREATED,

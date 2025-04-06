@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class UserCreate(BaseModel):
-    telegram_id: Optional[str] = Field(None, example="@username")
+    telegram_id: Optional[int] = Field(None, example="1")
     username: Optional[str] = Field(None, example="john_doe")
     email: Optional[EmailStr] = Field(None, example="user@example.com")
     phone_number: Optional[str] = Field(None, example="+123456789")
@@ -18,7 +18,7 @@ class UserCreate(BaseModel):
 class UserResponse(BaseModel):
     id: int
     username: Optional[str]
-    telegram_id: Optional[str] = None
+    telegram_id: Optional[int] = None
     email: Optional[EmailStr] = None
     phone_number: Optional[str] = None
     is_blocked: Optional[bool] = None
