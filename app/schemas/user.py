@@ -1,21 +1,28 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
 from datetime import datetime
 
 
 class UserCreate(BaseModel):
-    telegram_id: str = Field(..., max_length=255)
-    name: str = Field(..., max_length=255)
-    phone_number: str = Field(..., max_length=255)
+    telegram_id: Optional[str] = Field(None, example="@username")
+    username: Optional[str] = Field(None, example="john_doe")
+    email: Optional[EmailStr] = Field(None, example="user@example.com")
+    phone_number: Optional[str] = Field(None, example="+123456789")
+    password: Optional[str] = Field(None, example="securepassword123")
+    auth_method: str = Field(..., example="telegram")  # Required to specify the method
+
+    class Config:
+        from_attributes = True
 
 
 class UserResponse(BaseModel):
     id: int
-    telegram_id: str
-    name: str
-    phone_number: str
-    is_blocked: bool
-    blocked_at: Optional[datetime]
+    username: Optional[str]
+    telegram_id: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone_number: Optional[str] = None
+    is_blocked: Optional[bool] = None
+    blocked_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

@@ -17,6 +17,7 @@ class SecuritySettings(BaseSettings):
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int
+    JWT_REFRESH_TOKEN_EXPIRE_DAYS: int
 
 
 class DatabaseSettings(BaseSettings):
@@ -42,7 +43,8 @@ class RedisSettings(BaseSettings):
     REDIS_HOST: str
     REDIS_PASSWORD: SecretStr
     REDIS_PORT: int
-    REDIS_DB: int  # Should be an integer
+    REDIS_DB: int
+    REDIS_JTI_EXPIRY: int
 
     @property
     def url(self) -> str:

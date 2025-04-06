@@ -5,7 +5,7 @@ from app.api.routers.tools.enums import APIStatusEnum
 
 
 class APIResponse(BaseModel):
-    status: APIStatusEnum
+    status: int | APIStatusEnum
     message: str | dict[str, Any]
     detail: Optional[Any] = None
 

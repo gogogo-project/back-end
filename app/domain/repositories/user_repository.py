@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from app.domain.models import User
 
@@ -18,9 +17,9 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    async def is_user_exists(
-            self,
-            id: Optional[str] = None,
-            telegram_id: Optional[str] = None,
-    ) -> bool:
+    async def is_user_exists(self, **kwargs) -> bool:
+        pass
+
+    @abstractmethod
+    async def get_user_by_auth_method(self, auth_method: str, identifier: str | int) -> bool:
         pass

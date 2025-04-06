@@ -13,6 +13,22 @@ from app.schemas.user import UserCreate, UserResponse
 router = APIRouter()
 
 
+@router.post("/telegram_login/", response_model=UserResponse, tags=["Users"])
+async def login_with_telegram(user: UserCreate, db: AsyncSession = Depends(get_db)):
+    user_repository = SQLUserRepository(db)
+    existing_user: bool = await user_repository.is_user_exists(telegram_id=user.telegram_id)
+    if existing_user:
+        ...
+    else:
+        service = UserService(SQLUserRepository(db))
+        new_user = await service.create_user(user)
+        return APIResponse(
+            status=APIStatusEnum.CREATED,
+            message=f'User with telegram_id {new_user.telegram_id} created',
+            detail=UserResponse.model_validate(new_user)
+        )
+
+
 @router.post(path="/telegram_create_user/", response_model=APIResponse, tags=["Users"])
 async def create_user_with_telegram(user: UserCreate, db: AsyncSession = Depends(get_db)):
     """
