@@ -28,6 +28,21 @@ services:
          - redis-data:${REDIS_DATA}
       command: [ "--requirepass", "${REDIS_PASSWORD}" ]
 
+   postgres-test:
+      image: postgres:latest
+      container_name: database_test
+      restart: always
+      environment:
+         POSTGRES_PASSWORD: "testpass"
+         POSTGRES_USER: "testuser"
+         POSTGRES_DB: "test_db"
+      ports:
+         - "5433:5432"
+      volumes:
+         - postgres-test-data:/var/lib/postgresql/data
+
+
 volumes:
    postgres-data:
    redis-data:
+   postgres-test-data:

@@ -1,7 +1,9 @@
 from typing import Any, Optional, Union
 
+from pydantic import BaseModel, ConfigDict
+
 from app.api.routers.tools.enums import APIStatusEnum
-from app.schemas.user import TelegramUserResponse, BaseModel
+from app.schemas.user import TelegramUserResponse
 
 
 class APIResponse(BaseModel):
@@ -9,5 +11,4 @@ class APIResponse(BaseModel):
     message: Union[str, dict[str, Any]]
     detail: Optional[TelegramUserResponse]
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(extra='ignore', from_attributes=True)

@@ -80,5 +80,5 @@ class UserService:
         strategy = self.strategies[user_data.auth_method]
         user = await strategy.create(user_data=user_data, repository=self.user_repository)
         if auth_method == "telegram":
-            return TelegramUserResponse(id=user.id, telegram_id=user.telegram_id, username=user.username)
-        return GeneralUserResponse(id=user.id, username=user.username, email=user.email)
+            return TelegramUserResponse.model_validate(user)
+        return GeneralUserResponse.model_validate(user)

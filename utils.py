@@ -1,4 +1,6 @@
+import os
 from os.path import exists
+from typing import Optional
 from pathlib import Path
 
 from consts import ROOT_DIR
@@ -6,18 +8,18 @@ from consts import ROOT_DIR
 
 def get_environment_type() -> str:
     if exists(ROOT_DIR / '.env'):
-        return 'local'
-    if exists(ROOT_DIR / '.env.testing'):
-        return 'testing'
-    if exists(ROOT_DIR / '.env.production'):
-        return 'production'
+        return 'env'
+    if exists(ROOT_DIR / '.env.test'):
+        return 'test'
+    if exists(ROOT_DIR / '.env.prod'):
+        return 'prod'
     raise EnvironmentError('Environment not found.')
 
-def get_environment_file_path() -> Path:
-    environment_type = get_environment_type()
+def get_environment_file_path(env: Optional[str] = None) -> Path:
+    environment_type = env or get_environment_type()
     environments = {
-        'local': ROOT_DIR / '.env',
-        'testing': ROOT_DIR / '.env.testing',
-        'production': ROOT_DIR / '.env.production',
+        'env': ROOT_DIR / '.env',
+        'test': ROOT_DIR / '.env.test',
+        'prod': ROOT_DIR / '.env.prod',
     }
     return environments[environment_type]

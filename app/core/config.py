@@ -1,3 +1,6 @@
+from functools import lru_cache
+from os import getenv
+
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings as _BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import URL
@@ -7,7 +10,7 @@ from utils import get_environment_file_path
 
 class BaseSettings(_BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=get_environment_file_path(),
+        env_file=get_environment_file_path(getenv("ENV")),
         env_file_encoding="utf-8",
         extra="ignore",
     )
@@ -50,7 +53,13 @@ class RedisSettings(BaseSettings):
     def url(self) -> str:
         return f"redis://:{self.REDIS_PASSWORD.get_secret_value()}@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
 
+
+@lru_cache()
+def get_database_settings():
+    return DatabaseSettings()
+
+
 settings = BaseSettings()
 security_settings = SecuritySettings()
-database_settings = DatabaseSettings()
+database_settings = get_database_settings()
 redis_settings = RedisSettings()

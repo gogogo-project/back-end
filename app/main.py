@@ -5,9 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routers import user
 from app.infrastructure.database import create_db_and_tables
 
-# FastAPI Application Instance
 
-# Startup Event (Database Initialization)
 @asynccontextmanager
 async def startup(app_: FastAPI):
     yield await create_db_and_tables()
@@ -25,18 +23,17 @@ app = FastAPI(
     lifespan=startup
 )
 
-# CORS Middleware (if needed for frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change to specific domains in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Register API Routers
 app.include_router(user.router, prefix="/api/users", tags=["Users"])
-# Root Route
+
+
 @app.get("/", tags=["Health Check"])
 async def root():
     return {"message": "Welcome to Gogogo Ride-Sharing API 🚗"}
