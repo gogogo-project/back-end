@@ -15,8 +15,8 @@ from app.schemas import (
 router = APIRouter()
 
 
-@router.post("/telegram_trip_create/", response_model=APIResponse, tags=["Trips"])
-async def telegram_create_driver(trip_data: TripCreate, db: AsyncSession = Depends(get_db)):
+@router.post("/telegram_create_trip/", response_model=APIResponse, tags=["Trips"])
+async def telegram_create_trip(trip_data: TripCreate, db: AsyncSession = Depends(get_db)):
     trip_service = TripService(TripORMRepository(db))
     trip: Trip = await trip_service.create_ride(trip_data)
 
