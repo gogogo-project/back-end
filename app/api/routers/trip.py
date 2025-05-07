@@ -20,8 +20,6 @@ async def telegram_create_driver(trip_data: TripCreate, db: AsyncSession = Depen
     trip_service = TripService(TripORMRepository(db))
     trip: Trip = await trip_service.create_ride(trip_data)
 
-    print(f'{trip=}')
-
     return APIResponse(
         status=201,
         message='Trip created successfully',
