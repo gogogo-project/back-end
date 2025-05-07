@@ -1,14 +1,19 @@
-from typing import Type
+from typing import Type, Optional
 
 from app.core.security import get_password_hash
-from app.domain.repositories.user_repository import UserRepository
+from app.domain.models import User
+from app.domain.repositories.user_repository import UserABCRepository
 from app.error.user_errors import ValidationException, UserAlreadyExistsException
-from app.schemas.user import (
-    UserCreateTypeVar,
-    UserResponseTypeVar,
+from app.schemas import (
     TelegramUserResponse,
+    TelegramUserCreate,
     GeneralUserResponse,
 )
+from app.schemas.base_schema import (
+    UserCreateTypeVar,
+    UserResponseTypeVar,
+)
+
 from app.domain.services.bases import BaseUserCreationStrategy
 
 
@@ -16,7 +21,7 @@ class TelegramUserCreationStrategy(BaseUserCreationStrategy):
     """
     Handles Telegram-based user creation.
     """
-    async def create(self, user_data: UserCreateTypeVar, repository: UserRepository):
+    async def create(self, user_data: UserCreateTypeVar, repository: UserABCRepository):
         if not user_data.telegram_id:
             raise ValidationException("Telegram ID is required for Telegram authentication.")
 
@@ -27,7 +32,7 @@ class EmailUserCreationStrategy(BaseUserCreationStrategy):
     """
     Handles Email-based user creation.
     """
-    async def create(self, user_data: UserCreateTypeVar, repository: UserRepository):
+    async def create(self, user_data: UserCreateTypeVar, repository: UserABCRepository):
         if not user_data.email or not user_data.password:
             raise ValidationException("Email and password are required for email authentication.")
 
@@ -39,7 +44,7 @@ class PhoneUserCreationStrategy(BaseUserCreationStrategy):
     """
     Handles Phone-based user creation.
     """
-    async def create(self, user_data: UserCreateTypeVar, repository: UserRepository):
+    async def create(self, user_data: UserCreateTypeVar, repository: UserABCRepository):
         if not user_data.phone_number:
             raise ValidationException("Phone number is required for phone authentication.")
 
@@ -52,8 +57,16 @@ class UserService:
         "email": EmailUserCreationStrategy(),
         "phone": PhoneUserCreationStrategy(),
     }
-    def __init__(self, user_repository: UserRepository):
+    def __init__(self, user_repository: UserABCRepository):
         self.user_repository = user_repository
+
+    async def get_or_create_user(self, user_data: TelegramUserCreate) -> User:
+        user: Optional[User] = await self.user_repository.get_user_by_telegram_id(
+            telegram_id=user_data.telegram_id
+        )
+        if user is None:
+            user: Optional[User] = await self.user_repository.create_user(user_data=user_data.model_dump())
+        return user
 
     async def create_user(self, user_data: UserCreateTypeVar) -> UserResponseTypeVar:
         """

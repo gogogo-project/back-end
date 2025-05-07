@@ -1,11 +1,12 @@
-from typing import Optional, Callable, overload, Union
+from time import sleep
+from typing import Optional, Callable, overload, Union, Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.domain.models import User
-from app.domain.repositories.user_repository import UserRepository
-from app.schemas.user import UserCreateTypeVar
+from app.domain.repositories.user_repository import UserABCRepository
+from app.schemas.base_schema import UserCreateTypeVar
 from app.infrastructure.orm.queries import (
     filter_user_by_telegram_id,
     filter_user_by_email,
@@ -16,7 +17,7 @@ from app.infrastructure.orm.queries import (
 )
 
 
-class SQLUserRepository(UserRepository):
+class UserORMRepository(UserABCRepository):
 
     filter_map: dict[str, Callable] = {
         'id': filter_user_by_id,
@@ -33,11 +34,12 @@ class SQLUserRepository(UserRepository):
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create_user(self, user_data: UserCreateTypeVar) -> User:
-        user = User(**user_data.model_dump())
+    async def create_user(self, user_data: dict[str, Any]) -> User:
+        user = User(**user_data)
         self.db.add(user)
         await self.db.commit()
         await self.db.refresh(user)
+        sleep(0.1)
         return user
 
     async def get_user_by_telegram_id(self, telegram_id: int) -> User | None:

@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routers import user
+from app.api.routers import trip
 from app.infrastructure.database import create_db_and_tables
 
 
@@ -32,6 +33,7 @@ app.add_middleware(
 )
 
 app.include_router(user.router, prefix="/api/users", tags=["Users"])
+app.include_router(trip.router, prefix="/api/trips", tags=["Trips"])
 
 
 @app.get("/", tags=["Health Check"])

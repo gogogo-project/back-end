@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from app.domain.models import User
 
 
-class UserRepository(ABC):
+class UserABCRepository(ABC):
     @abstractmethod
     async def create_user(self, user_data: dict) -> User:
         pass

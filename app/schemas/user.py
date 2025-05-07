@@ -1,21 +1,10 @@
-from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, TypeVar
+from pydantic import Field
+from typing import Optional
+
+from .base_schema import BaseUserCreate, BaseUserResponse
 
 
-UserCreateTypeVar = TypeVar('UserCreateTypeVar', bound='UserCreate')
-UserResponseTypeVar = TypeVar('UserResponseTypeVar', bound='UserResponse')
-
-class UserCreate(BaseModel):
-    model_config = ConfigDict(extra='ignore', from_attributes=True)
-    pass
-
-
-class BaseUserResponse(BaseModel):
-    model_config = ConfigDict(extra='ignore', from_attributes=True)
-    pass
-
-
-class TelegramUserCreate(UserCreate):
+class TelegramUserCreate(BaseUserCreate):
     telegram_id: int = Field(..., json_schema_extra=1)
     username: str = Field(..., json_schema_extra="@username")
     phone_number: Optional[str] = Field(..., json_schema_extra="+996700700700")

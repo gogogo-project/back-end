@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Integer, Enum
+from sqlalchemy import ForeignKey, Integer, Enum, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.domain.models.enums.trip_enum import TripStatusEnum
@@ -12,13 +12,15 @@ class Trip(Base, TripMixin, TimestampMixin):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     driver_id: Mapped[int] = mapped_column(ForeignKey("drivers.id"), nullable=False)
+    car_model: Mapped[str] = mapped_column(String(255), nullable=False)
+    car_number: Mapped[str] = mapped_column(String(50), nullable=False, unique=False)
     number_of_seats: Mapped[int] = mapped_column(Integer, nullable=False)
 
     driver: Mapped["Driver"] = relationship("Driver", back_populates="trips")
     passengers: Mapped[list["TripPassenger"]] = relationship("TripPassenger", back_populates="trip")
 
 
-class TripPassenger(Base):
+class TripPassenger(Base, TripMixin):
     __tablename__ = "trip_passengers"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
