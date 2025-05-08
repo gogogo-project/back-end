@@ -21,4 +21,5 @@ def get_environment_file_path(env: Optional[str] = None) -> Path:
         'test': ROOT_DIR / '.env.test',
         'prod': ROOT_DIR / '.env.prod',
     }
+
     return environments[environment_type]
