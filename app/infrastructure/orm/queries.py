@@ -1,11 +1,11 @@
-from typing import Union
+from typing import Union, Any, Coroutine, Sequence
 
 from sqlalchemy import desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
-from app.domain.models import User, Driver, Trip
+from app.domain.models import User, Driver, Passenger, Trip
 
 
 async def filter_user_by_id(session: AsyncSession, user_id: int | str):
@@ -50,7 +50,23 @@ async def get_driver_by_user_id(session: AsyncSession, user_id: int) -> Union[Dr
     return result.scalar_one_or_none()
 
 
-async def get_trips(session: AsyncSession, driver_id: int) -> Union[list[Trip], None]:
+async def get_passenger_by_id(session: AsyncSession, passenger_id: int) -> Union[Passenger, None]:
+    result = await session.execute(
+        select(Passenger)
+        .where(id=passenger_id))
+    return result.scalar_one_or_none()
+
+
+async def get_passenger_by_user_id(session: AsyncSession, user_id: int) -> Union[Passenger, None]:
+    result = await session.execute(
+        select(Passenger)
+        .options(selectinload(Passenger.user))
+        .where(Passenger.user_id == user_id)
+    )
+    return result.scalar_one_or_none()
+
+
+async def get_trips(session: AsyncSession, driver_id: int) -> Sequence[Trip]:
     result = await session.execute(
         select(Trip).where(
             Trip.driver_id == driver_id
