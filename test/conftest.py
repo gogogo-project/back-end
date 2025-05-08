@@ -6,11 +6,9 @@ from sqlalchemy.orm import sessionmaker
 
 from app.main import app
 from app.infrastructure.database import Base, get_db
-from app.core.config import get_database_settings
 
 
-test_settings = get_database_settings()
-test_engine = create_async_engine(test_settings.url, echo=False)
+test_engine = create_async_engine('sqlite+aiosqlite:///:memory:', echo=False)
 TestSessionLocal = sessionmaker(test_engine, class_=AsyncSession, expire_on_commit=False)
 
 
@@ -33,7 +31,6 @@ async def db_session(prepare_test_db) -> AsyncSession:
 
 @pytest_asyncio.fixture(scope="function")
 async def client(db_session: AsyncSession) -> AsyncClient:
-    # Override dependency
     async def override_get_db():
         yield db_session
 
