@@ -5,7 +5,7 @@ from pydantic import SecretStr
 from pydantic_settings import BaseSettings as _BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import URL
 
-from utils import get_environment_file_path
+from app.utils import get_environment_file_path
 
 
 class BaseSettings(_BaseSettings):

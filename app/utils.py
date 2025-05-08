@@ -1,9 +1,8 @@
-import os
 from os.path import exists
 from typing import Optional
 from pathlib import Path
 
-from consts import ROOT_DIR
+from app.consts import ROOT_DIR
 
 
 def get_environment_type() -> str:
