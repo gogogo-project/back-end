@@ -4,6 +4,7 @@ from os import getenv
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings as _BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import URL
+from loguru import logger
 
 from app.utils import get_environment_file_path
 
@@ -40,6 +41,7 @@ class DatabaseSettings(BaseSettings):
             port=self.POSTGRES_PORT,
             database=self.POSTGRES_DB,
         )
+        logger.info(f"Database URL: {url}")
         return url
 
 class RedisSettings(BaseSettings):
@@ -51,6 +53,7 @@ class RedisSettings(BaseSettings):
 
     @property
     def url(self) -> str:
+        logger.info(f"Redis URL: {self.REDIS_HOST}")
         return f"redis://:{self.REDIS_PASSWORD.get_secret_value()}@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
 
 
