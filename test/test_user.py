@@ -39,7 +39,6 @@ class TestTelegramUserEndpoints:
     @pytest.mark.asyncio
     async def test_telegram_driver(self, client: AsyncClient) -> None:
         user_data = await self.create_or_get_user(client)
-
         created_driver = await client.post(
             url="/api/users/telegram_driver/",
             json={'user_id': user_data['detail']['id']}

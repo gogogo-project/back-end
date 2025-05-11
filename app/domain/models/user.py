@@ -1,6 +1,6 @@
 from typing import Optional
 from sqlalchemy.orm import mapped_column, Mapped, relationship
-from sqlalchemy import String, ForeignKey, Float, Integer
+from sqlalchemy import String, ForeignKey, Float, Integer, BigInteger
 from app.infrastructure.database import Base
 from app.domain.models.mixins.timestamp_mixin import TimestampMixin
 
@@ -9,13 +9,15 @@ class User(Base, TimestampMixin):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    telegram_id: Mapped[Optional[int]] = mapped_column(Integer, unique=True, nullable=True)  # For Telegram users
-    username: Mapped[Optional[str]] = mapped_column(String(255), unique=True, nullable=True)  # Telegram or app username
-    email: Mapped[Optional[str]] = mapped_column(String(255), unique=True, nullable=True)  # Mobile app users
-    phone_number: Mapped[Optional[str]] = mapped_column(String(255), unique=True, nullable=True)  # OTP login
-    password: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)  # Only needed for email/password users
-    auth_method: Mapped[str] = mapped_column(String(50), nullable=False)  # ['telegram', 'phone', 'email', 'oauth']
+    telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, unique=True, nullable=True)  # For Telegram users
+    name: Mapped[str] = mapped_column(String(64))
+    username: Mapped[Optional[str]] = mapped_column(String(64), unique=True, nullable=True)  # Telegram or app username
+    email: Mapped[Optional[str]] = mapped_column(String(64), unique=True, nullable=True)  # Mobile app users
+    phone_number: Mapped[Optional[str]] = mapped_column(String(64), unique=True, nullable=True)  # OTP login
+    password: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)  # Only needed for email/password users
+    auth_method: Mapped[str] = mapped_column(String(16), nullable=False)  # ['telegram', 'phone', 'email', 'oauth']
     is_blocked: Mapped[bool] = mapped_column(default=False)
+    language_code: Mapped[str | None] = mapped_column(String(4))
 
     driver_profile: Mapped["Driver"] = relationship("Driver", back_populates="user", uselist=False)
     passenger_profile: Mapped["Passenger"] = relationship("Passenger", back_populates="user", uselist=False)
