@@ -1,11 +1,18 @@
-FROM python:3.13-slim
+FROM python:3.12-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-WORKDIR /gogogo_app
+RUN mkdir /app
 
-COPY ./requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+WORKDIR /app
 
-COPY ./app /gogogo_app/app
-COPY .env /gogogo_app/.env
+
+COPY requirements.txt pyproject.toml uv.lock /app/
+
+RUN uv pip install --system -r requirements.txt
+
+
+COPY . /app/
+
+EXPOSE 8000
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

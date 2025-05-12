@@ -1,0 +1,14 @@
+[project]
+name = "back-end"
+version = "0.1.0"
+description = "FastAPI + uv example"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ujson==5.10.0",
+    "uvicorn==0.34.0",
+    "uvloop==0.21.0",
+]
+
+[tool.uv]
+virtual = true
