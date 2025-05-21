@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
-from app.domain.models import User, Driver, Trip
+from app.domain.models import User, Driver, Trip, Passenger
 
 
 async def filter_user_by_id(session: AsyncSession, user_id: int | str):
@@ -59,3 +59,12 @@ async def get_trips(session: AsyncSession, driver_id: int) -> Union[list[Trip], 
         ).limit(5)
     )
     return result.scalars().all()
+
+
+async def get_passenger_by_user_id(session: AsyncSession, user_id: int) -> Union[Passenger, None]:
+    result = await session.execute(
+        select(Passenger)
+        .options(selectinload(Passenger.user))
+        .where(Passenger.user_id == user_id)
+    )
+    return result.scalar_one_or_none()

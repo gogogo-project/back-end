@@ -2,7 +2,7 @@ from typing import Union
 
 from app.domain.models import Trip
 from app.domain.repositories.trip_repository import TripABCRepository
-from app.schemas import TripCreate
+from app.schemas import TripDriverCreate
 
 
 class TripService:
@@ -14,7 +14,7 @@ class TripService:
         string = ''.join(filter(str.isalpha, string.strip().lower()))
         return string
 
-    async def create_ride(self, trip_data: TripCreate) -> Trip:
+    async def create_ride(self, trip_data: TripDriverCreate) -> Trip:
         trip_data = trip_data.model_dump()
         origin = self.normalize(trip_data['origin'])
         destination = self.normalize(trip_data['destination'])

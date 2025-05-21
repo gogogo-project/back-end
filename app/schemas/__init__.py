@@ -1,7 +1,8 @@
 from .api_response import APIResponse
 from .user import TelegramUserCreate, TelegramUserResponse, GeneralUserResponse
 from .driver import TelegramDriverCreate, TelegramDriverResponse, GeneralDriverResponse
-from .trip import  TripCreate, TripResponse
+from .trip import  TripDriverCreate, TripDriverResponse
+from .passenger import TelegramPassengerCreate, TelegramPassengerResponse, GeneralPassengerResponse
 
 __all__ = [
     'APIResponse',
@@ -11,6 +12,9 @@ __all__ = [
     'TelegramDriverCreate',
     'TelegramDriverResponse',
     'GeneralDriverResponse',
-    'TripCreate',
-    'TripResponse',
+    'TripDriverCreate',
+    'TripDriverResponse',
+    'TelegramPassengerCreate',
+    'TelegramPassengerResponse',
+    'GeneralPassengerResponse',
 ]

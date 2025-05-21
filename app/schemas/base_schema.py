@@ -7,9 +7,9 @@ UserCreateTypeVar = TypeVar('UserCreateTypeVar', bound='BaseUserCreate')
 UserResponseTypeVar = TypeVar('UserResponseTypeVar', bound='BaseUserResponse')
 
 
-class BaseUserCreate(BaseModel):
+class BaseCreate(BaseModel):
     model_config = ConfigDict(extra='ignore', from_attributes=True)
 
 
-class BaseUserResponse(BaseModel):
+class BaseResponse(BaseModel):
     model_config = ConfigDict(extra='ignore', from_attributes=True)

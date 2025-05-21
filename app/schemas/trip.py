@@ -1,8 +1,12 @@
-from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional
 from datetime import datetime
+from typing import Optional
 
-class TripCreate(BaseModel):
+from pydantic import Field
+
+from .base_schema import BaseCreate, BaseResponse
+
+
+class TripDriverCreate(BaseCreate):
     driver_id: int = Field(..., json_schema_extra=1)
     car_model: str = Field(..., json_schema_extra="Audi A6")
     car_number: str = Field(..., json_schema_extra="NAA7776")
@@ -20,10 +24,8 @@ class TripCreate(BaseModel):
     start_time: datetime = Field(..., json_schema_extra=datetime.now())
     end_time: datetime = Field(..., json_schema_extra=datetime.now())
 
-    model_config = ConfigDict(extra='ignore', from_attributes=True)
 
-
-class TripResponse(BaseModel):
+class TripDriverResponse(BaseResponse):
     id: int
     driver_id: int
     car_model: str
@@ -39,6 +41,3 @@ class TripResponse(BaseModel):
     end_time: datetime
     created_at: datetime
     updated_at: datetime
-
-    model_config = ConfigDict(from_attributes=True)
-

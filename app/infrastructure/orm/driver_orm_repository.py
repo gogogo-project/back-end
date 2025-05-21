@@ -8,7 +8,6 @@ from app.domain.repositories import DriverABCRepository
 from app.domain.models import Driver, Trip
 
 
-
 class DriverORMRepository(DriverABCRepository):
 
     __slots__ = ('__db',)

@@ -1,10 +1,10 @@
 from pydantic import Field
 from typing import Optional
 
-from .base_schema import BaseUserCreate, BaseUserResponse
+from .base_schema import BaseCreate, BaseResponse
 
 
-class TelegramUserCreate(BaseUserCreate):
+class TelegramUserCreate(BaseCreate):
     telegram_id: int = Field(..., json_schema_extra=1)
     name: str = Field(..., json_schema_extra='Elnazar')
     username: str = Field(..., json_schema_extra="@username")
@@ -12,7 +12,7 @@ class TelegramUserCreate(BaseUserCreate):
     auth_method: Optional[str] = Field(json_schema_extra='telegram')
 
 
-class TelegramUserResponse(BaseUserResponse):
+class TelegramUserResponse(BaseResponse):
     id: int
     telegram_id: int
     name: str
@@ -20,5 +20,5 @@ class TelegramUserResponse(BaseUserResponse):
     phone_number: str
 
 
-class GeneralUserResponse(BaseUserResponse):
+class GeneralUserResponse(BaseResponse):
     pass
