@@ -61,6 +61,6 @@ async def telegram_passenger(passenger_data: TelegramPassengerCreate, db: AsyncS
 
     return APIResponse(
         status=APIStatusEnum.SUCCESS,
-        message=f'Driver with telegram_id {passenger.user_id} authenticated successfully',
+        message=f'Passenger with telegram_id {passenger.user_id} authenticated successfully',
         detail=TelegramDriverResponse.model_validate(passenger),
     )
